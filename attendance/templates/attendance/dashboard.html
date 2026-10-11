@@ -1,0 +1,146 @@
+
+{% extends "base.html" %}
+
+{% block title %}Students | StudentMS{% endblock %}
+{% block breadcrumb %}Students{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">STUDENT MANAGEMENT</span>
+        <h1>Students Dashboard</h1>
+        <p>Manage student records from one place.</p>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'add_student' %}">
+        <i class="fa-solid fa-plus"></i>
+        Add Student
+    </a>
+</div>
+
+<!-- Statistics -->
+<div class="stats">
+    <article class="stat">
+        <span class="stat-icon purple">
+            <i class="fa-solid fa-users"></i>
+        </span>
+        <div>
+            <small>Total Students</small>
+            <strong>{{ total_students|default:"0" }}</strong>
+        </div>
+    </article>
+</div>
+
+<!-- Student List -->
+<section class="panel">
+
+    <div class="panel-head">
+        <div>
+            <h2>All Students</h2>
+            <p>Search and manage student information.</p>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <form method="get" class="search-form">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                type="text"
+                name="q"
+                value="{{ request.GET.q|default:'' }}"
+                placeholder="Search students..."
+                aria-label="Search students"
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            Reset
+        </a>
+    </form>
+
+    <!-- Table -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Roll Number</th>
+                    <th>Course</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>
+                        <div class="student">
+                            <span class="student-avatar">
+                                {{ student.name|slice:":1"|upper }}
+                            </span>
+                            <span class="student-name">
+                                {{ student.name }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        {{ student.roll_number|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ student.course|default:"—" }}
+                    </td>
+
+                    <td>
+                        <div class="action-buttons">
+                            <a
+                                href="{% url 'edit_student' student.pk %}"
+                                class="btn btn-secondary btn-sm"
+                                title="Edit student"
+                            >
+                                <i class="fa-solid fa-pen"></i>
+                                Edit
+                            </a>
+
+                            <a
+                                href="{% url 'delete_student' student.pk %}"
+                                class="btn btn-danger btn-sm"
+                                title="Delete student"
+                            >
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <b>No students found</b>
+                        <p>Add a student or try a different search.</p>
+
+                        <a
+                            href="{% url 'add_student' %}"
+                            class="btn btn-primary"
+                        >
+                            Add Student
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,118 @@
+
+{% extends "base.html" %}
+
+{% block title %}Student Reports | StudentMS{% endblock %}
+{% block breadcrumb %}Attendance / Student reports{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">INDIVIDUAL INSIGHTS</span>
+        <h1>Student attendance reports</h1>
+        <p>
+            Review attendance levels and identify students who may need support.
+        </p>
+    </div>
+</div>
+
+<div class="stats">
+    <article class="stat">
+        <span class="stat-icon green"><i class="fa-solid fa-thumbs-up"></i></span>
+        <div>
+            <small>Good attendance</small>
+            <strong>{{ good_attendance_count|default:"0" }}</strong>
+        </div>
+    </article>
+
+    <article class="stat">
+        <span class="stat-icon orange">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </span>
+        <div>
+            <small>Low attendance</small>
+            <strong>{{ low_attendance_count|default:"0" }}</strong>
+        </div>
+    </article>
+
+    <article class="stat">
+        <span class="stat-icon red">
+            <i class="fa-regular fa-calendar-xmark"></i>
+        </span>
+        <div>
+            <small>No attendance</small>
+            <strong>{{ no_attendance_count|default:"0" }}</strong>
+        </div>
+    </article>
+</div>
+
+<section class="panel">
+    <div class="panel-head">
+        <div>
+            <h2>Attendance by student</h2>
+            <p>Individual totals and attendance percentages.</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Roll number</th>
+                    <th>Total classes</th>
+                    <th>Attended</th>
+                    <th>Attendance rate</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>
+                        <div class="student">
+                            <span class="student-avatar">
+                                {{ student.name|slice:":1"|upper }}
+                            </span>
+                            <b>{{ student.name }}</b>
+                        </div>
+                    </td>
+
+                    <td>{{ student.roll_number }}</td>
+                    <td>{{ student.total_classes|default:"0" }}</td>
+                    <td>{{ student.attended_classes|default:"0" }}</td>
+
+                    <td>
+                        <div class="percentage">
+                            <div class="bar">
+                                <span class="green-fill"
+                                    style="width:{{ student.attendance_percentage|default:0 }}%">
+                                </span>
+                            </div>
+                            <b>
+                                {{ student.attendance_percentage|default:0|floatformat:1 }}%
+                            </b>
+                        </div>
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="empty">
+                        <i class="fa-solid fa-users"></i>
+                        <b>No student report available</b>
+                        <p>
+                            Attendance information will appear here when available.
+                        </p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="footnote">
+        <i class="fa-solid fa-circle-info"></i>
+        Percentages are based on records available in the system.
+    </p>
+</section>
+{% endblock %}

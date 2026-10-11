@@ -1,0 +1,160 @@
+
+{% extends "base.html" %}
+
+{% block title %}Analytics | StudentMS{% endblock %}
+{% block breadcrumb %}Attendance / Analytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">INSIGHTS</span>
+        <h1>Attendance analytics</h1>
+        <p>A high-level view of attendance patterns across students.</p>
+    </div>
+
+    <a class="btn btn-outline" href="{% url 'monthly_attendance_report' %}">
+        Monthly report
+    </a>
+</div>
+
+<div class="stats">
+    <article class="stat">
+        <span class="stat-icon purple"><i class="fa-solid fa-users"></i></span>
+        <div>
+            <small>Total students</small>
+            <strong>{{ total_students|default:"0" }}</strong>
+        </div>
+    </article>
+
+    <article class="stat">
+        <span class="stat-icon blue">
+            <i class="fa-solid fa-clipboard-check"></i>
+        </span>
+        <div>
+            <small>Attendance records</small>
+            <strong>{{ total_records|default:"0" }}</strong>
+        </div>
+    </article>
+
+    <article class="stat">
+        <span class="stat-icon green">
+            <i class="fa-solid fa-chart-line"></i>
+        </span>
+        <div>
+            <small>Attendance rate</small>
+            <strong>{{ attendance_percentage|default:0|floatformat:1 }}%</strong>
+        </div>
+    </article>
+</div>
+
+<div class="columns">
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Status breakdown</h2>
+                <p>Distribution of recorded attendance.</p>
+            </div>
+        </div>
+
+        <div class="breakdown">
+            {% with present=status_counts.Present absent=status_counts.Absent late=status_counts.Late %}
+
+            <div class="bar-row">
+                <span>Present</span>
+                <b>{{ present|default:"0" }}</b>
+                <div class="bar">
+                    <span class="green-fill"
+                        style="width:{% if total_records %}{% widthratio present total_records 100 %}{% else %}0{% endif %}%">
+                    </span>
+                </div>
+            </div>
+
+            <div class="bar-row">
+                <span>Absent</span>
+                <b>{{ absent|default:"0" }}</b>
+                <div class="bar">
+                    <span class="red-fill"
+                        style="width:{% if total_records %}{% widthratio absent total_records 100 %}{% else %}0{% endif %}%">
+                    </span>
+                </div>
+            </div>
+
+            <div class="bar-row">
+                <span>Late</span>
+                <b>{{ late|default:"0" }}</b>
+                <div class="bar">
+                    <span class="orange-fill"
+                        style="width:{% if total_records %}{% widthratio late total_records 100 %}{% else %}0{% endif %}%">
+                    </span>
+                </div>
+            </div>
+
+            {% endwith %}
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Monthly activity</h2>
+                <p>Attendance records by month.</p>
+            </div>
+        </div>
+
+        {% for item in monthly_counts %}
+        <div class="month-row">
+            <span>{{ item.month }}</span>
+
+            <div class="bar">
+                <span class="blue-fill"
+                    style="width:{% if total_records %}{% widthratio item.count total_records 100 %}{% else %}0{% endif %}%">
+                </span>
+            </div>
+
+            <b>{{ item.count }}</b>
+        </div>
+        {% empty %}
+        <p class="empty">No monthly activity to display yet.</p>
+        {% endfor %}
+    </section>
+</div>
+
+<section class="panel space-top">
+    <div class="panel-head">
+        <div>
+            <h2>Recent attendance</h2>
+            <p>Latest records entered into the system.</p>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for record in recent_records %}
+                <tr>
+                    <td>{{ record.student.name }}</td>
+                    <td>{{ record.date|date:"M j, Y" }}</td>
+                    <td>
+                        <span class="status status-{{ record.status|lower }}">
+                            {{ record.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="empty">No recent records.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

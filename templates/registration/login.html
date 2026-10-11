@@ -1,0 +1,93 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login | StudentMS{% endblock %}
+
+{% block auth_content %}
+<div class="login-layout">
+
+    <section class="login-hero">
+        <div class="brand inverse">
+            <span class="brand-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+            <span>StudentMS
+                <small>MANAGEMENT PORTAL</small>
+            </span>
+        </div>
+
+        <div class="hero-copy">
+            <span class="eyebrow">YOUR CAMPUS, ORGANIZED</span>
+            <h1>Everything your students need, in one place.</h1>
+            <p>
+                Manage student records, track attendance, and turn
+                daily activity into clear insights.
+            </p>
+
+            <ul>
+                <li>✓ Simple student records</li>
+                <li>✓ Attendance at a glance</li>
+                <li>✓ Clear reports and insights</li>
+            </ul>
+        </div>
+
+        <small>A smarter way to manage your campus.</small>
+    </section>
+
+    <section class="login-side">
+        <div class="login-card">
+            <span class="eyebrow">WELCOME BACK</span>
+            <h2>Sign in to your account</h2>
+            <p class="muted">
+                Enter your details to continue to the dashboard.
+            </p>
+
+            {% if form.errors %}
+                <div class="alert error">
+                    Username or password is incorrect.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label for="id_username">Username</label>
+                <div class="input-wrap">
+                    <i class="fa-regular fa-user"></i>
+                    <input
+                        id="id_username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <label for="id_password">Password</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input
+                        id="id_password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button class="btn btn-primary full" type="submit">
+                    Sign in <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <p class="login-note">
+                <i class="fa-solid fa-shield-halved"></i>
+                Secure access for authorized administrators.
+            </p>
+        </div>
+    </section>
+</div>
+{% endblock %}

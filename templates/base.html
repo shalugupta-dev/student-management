@@ -1,0 +1,132 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StudentMS{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if request.user.is_authenticated %}
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <a class="brand" href="{% url 'dashboard' %}">
+            <span class="brand-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+            <span>Student<span class="brand-light">MS</span></span>
+        </a>
+
+        <p class="nav-heading">MAIN MENU</p>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-table-columns"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'add_student' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'add_student' or request.resolver_match.url_name == 'edit_student' %}active{% endif %}">
+                <i class="fa-solid fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+
+            <a href="{% url 'attendance_dashboard' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'attendance_dashboard' or request.resolver_match.url_name == 'mark_attendance' %}active{% endif %}">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="{% url 'monthly_attendance_report' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'monthly_attendance_report' %}active{% endif %}">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>Monthly Reports</span>
+            </a>
+
+            <a href="{% url 'analytics_dashboard' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Analytics</span>
+            </a>
+
+            <a href="{% url 'student_attendance_report' %}"
+               class="nav-link {% if request.resolver_match.url_name == 'student_attendance_report' %}active{% endif %}">
+                <i class="fa-solid fa-people-group"></i>
+                <span>Student Reports</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="user-card">
+                <div class="user-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+
+                <div class="user-info">
+                    <strong>{{ request.user.username }}</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div>
+                <span class="topbar-label">STUDENT MANAGEMENT SYSTEM</span>
+                <div class="topbar-title">
+                    {% block page_heading %}Dashboard{% endblock %}
+                </div>
+            </div>
+
+            <div class="topbar-profile">
+                <span class="online-dot"></span>
+                <span>{{ request.user.username }}</span>
+                <i class="fa-solid fa-circle-user"></i>
+            </div>
+        </header>
+
+        <section class="page-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </section>
+
+        <footer class="footer">
+            StudentMS <span>·</span> Student Management System
+        </footer>
+    </main>
+
+</div>
+{% else %}
+    {% block auth_content %}{% endblock %}
+{% endif %}
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

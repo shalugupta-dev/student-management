@@ -1,0 +1,56 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete Student | StudentMS{% endblock %}
+{% block breadcrumb %}Students / Delete{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="eyebrow">STUDENT DIRECTORY</span>
+        <h1>Delete student</h1>
+        <p>Review this action before confirming.</p>
+    </div>
+</div>
+
+<div class="confirm-wrap">
+    <section class="panel confirm-card">
+        <span class="delete-icon">
+            <i class="fa-solid fa-trash-can"></i>
+        </span>
+
+        <h2>Are you sure?</h2>
+        <p class="muted">
+            You are about to delete this student record.
+            This action cannot be undone.
+        </p>
+
+        <div class="confirm-student">
+            <span class="student-avatar">
+                {{ student.name|slice:":1"|upper }}
+            </span>
+
+            <div>
+                <b>{{ student.name }}</b>
+                <small>Roll number: {{ student.roll_number }}</small>
+                <small>Course: {{ student.course|default:"—" }}</small>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-actions centered">
+                <button class="btn btn-danger" type="submit">
+                    <i class="fa-solid fa-trash-can"></i>
+                    Yes, delete student
+                </button>
+
+                <a class="btn btn-outline" href="{% url 'dashboard' %}">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
